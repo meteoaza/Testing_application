@@ -82,7 +82,7 @@
          <bool>true</bool>
         </property>
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -134,7 +134,7 @@ p, li { white-space: pre-wrap; }
       <item row="2" column="1">
        <widget class="QTextBrowser" name="answer1">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -176,7 +176,7 @@ p, li { white-space: pre-wrap; }
       <item row="3" column="1">
        <widget class="QTextBrowser" name="answer2">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -218,7 +218,7 @@ p, li { white-space: pre-wrap; }
       <item row="4" column="1">
        <widget class="QTextBrowser" name="answer3">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -262,6 +262,7 @@ p, li { white-space: pre-wrap; }
      <string>Меню</string>
     </property>
     <addaction name="open"/>
+    <addaction name="settings"/>
     <addaction name="separator"/>
     <addaction name="exit"/>
    </widget>
@@ -276,6 +277,11 @@ p, li { white-space: pre-wrap; }
   <action name="exit">
    <property name="text">
     <string>Выход</string>
+   </property>
+  </action>
+  <action name="settings">
+   <property name="text">
+    <string>Настройки</string>
    </property>
   </action>
  </widget>

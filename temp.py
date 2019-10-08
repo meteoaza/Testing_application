@@ -1,29 +1,37 @@
-with open('/home/meteoaza/Downloads/TestForEngrs/MeteoSystemsTest.txt', 'r', encoding='cp1251')as f:
-    for _ in range(2):
-        name = f.readline()
+with open(r'C:\Users\Meteoaza\Dropbox\WorkSpace\Docs\Рабочие_Документы\Обучение\Тесты_вопросы\TestForEngrs\SafetyTest.txt', 'r',
+          encoding='utf-8')as f:
+    lines = f.readlines()
     test = {}
-    for _ in range(5):
-        question = f.readline()
-        answer1 = f.readline()
-        answer2 = f.readline()
-        answer3 = f.readline()
-        right = f.readline()
-        test[question] = [answer1, answer2, answer3, right]
-score = 0
-b = 0
-br = input("How much question?")
-for q, a in test.items():
-    if str(b) == br:
-        print('break')
-        break
-    b += 1
-    print(q)
-    print(a[0])
-    print(a[1])
-    print(a[2])
-    an = a[3]
-    r = input('Input write answer ')
-    if r == an:
-        print('r = an')
-        score += 1
-print(f'Your score is {score}')
+    n = 0
+    for line in lines:
+        if 'Name' in line[:5]:
+            test_name = line[5:]
+        elif 'SetCol' in line[:6]:
+            clr = line[7:]
+        elif 'SetM_5' in line[:7]:
+            mark_5 = line[7:9]
+
+    print(mark_5)
+
+    for line in lines:
+        try:
+            if 'Name' in line[:5]:
+                test_name = line[5:]
+            elif 'Qs' in line[:2]:
+                q = line
+                n += 1
+            elif 'A1' in line[:2]:
+                a1 = line
+            elif 'A2' in line[:2]:
+                a2 = line
+            elif 'A3' in line[:2]:
+                a3 = line
+            elif 'An' in line[:2]:
+                k = line
+            test[n-1] = [q, a1, a2, a3, k]
+
+        except NameError:
+            pass
+
+
+

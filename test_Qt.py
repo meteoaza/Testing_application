@@ -2,7 +2,7 @@ import sys, time, subprocess
 from student_name import Ui_Frame
 from Test_design import Ui_MainWindow
 from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QFileDialog
 
 
@@ -23,12 +23,14 @@ class TestApp(QtWidgets.QMainWindow):
         self.ch3 = self.ui.checkBox3
         self.next = self.ui.next
         self.open = self.ui.open
+        self.settings = self.ui.settings
         self.exit = self.ui.exit
         self.bar = self.ui.statusbar
         self.btnStud = self.ui_s.buttonBox
         self.lineStud = self.ui_s.student
         self.next.clicked.connect(self.fileOpen)
         self.open.triggered.connect(self.fileOpen)
+        self.settings.triggered.connect(self.settShow)
         self.exit.triggered.connect(sys.exit)
         self.q1.hide()
         self.a1.hide()
@@ -37,11 +39,41 @@ class TestApp(QtWidgets.QMainWindow):
         self.ch1.hide()
         self.ch2.hide()
         self.ch3.hide()
-        self.count = 0
+        self.answer_count = 0
         self.result = 0
         self.percent = 0
+        self.q_count = 0
         self.rep_key = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.rep_key.activated.connect(self.openRep)
+        # Settings read from ini file
+        try:
+            with open('settings.ini', 'r', encoding='utf-8')as f:
+                lines = f.readlines()
+        except FileNotFoundError:
+            with open('settings.ini', 'w', encoding='utf-8')as f:
+                text = "SetCol 1\nSetM_5 90 %\nSetM_4 70 %\nSetM_3 45 %\nSetM_2 30 %\n"
+                text1 = "Name - название теста\nQs  -  вопрос\nA1  -  ответ1\nA2  -  ответ2\nA3  -  ответ3\nAn  -  " \
+                        "правильный ответ "
+                f.write(text + '\n\n' + text1)
+            time.sleep(0.5)
+            with open('settings.ini', 'r', encoding='utf-8')as f:
+                lines = f.readlines()
+        try:
+            for line in lines:
+                if 'SetCol' in line[:7]:
+                    self.color = int(line[7:])
+                elif 'SetM_5' in line[:7]:
+                    self.mark_5 = int(line[7:9])
+                elif 'SetM_4' in line[:7]:
+                    self.mark_4 = int(line[7:9])
+                elif 'SetM_3' in line[:7]:
+                    self.mark_3 = int(line[7:9])
+                elif 'SetM_2' in line[:7]:
+                    self.mark_2 = int(line[7:9])
+        except Exception as e:
+            self.q1.show()
+            self.q1.setText('Settings error!!! ')
+        pass
 
     def fileOpen(self):
         f_dialog = QFileDialog()
@@ -49,34 +81,47 @@ class TestApp(QtWidgets.QMainWindow):
         f_dialog.setNameFilter("Text (*.txt)")
         if f_dialog.exec_():
             self.file_name = f_dialog.selectedFiles()[0]
+            self.test = {}
             try:
-                f = open(self.file_name, 'r', encoding='cp1251')
+                with open(self.file_name, 'r', encoding='utf-8')as f:
+                    lines = f.readlines()
             except Exception:
-                f = open(self.file_name, 'r', encoding='utf-8')
+                with open(self.file_name, 'r', encoding='cp1251')as f:
+                    lines = f.readlines()
                 pass
-            test_name = f.readline().strip()
-            f.close()
-            self.bar.showMessage(test_name)
+            for line in lines:
+                try:
+                    if not 'Name' in lines[0]:
+                        self.test_name = 'Не найдено название теста'
+                    elif 'Name' in line[:5]:
+                        self.test_name = line[5:]
+
+                except Exception:
+                    pass
+            n = 0
+            for line in lines:
+                try:
+                    if 'Qs' in line[:2]:
+                        q = line
+                        n += 1
+                    elif 'A1' in line[:2]:
+                        a1 = line
+                    elif 'A2' in line[:2]:
+                        a2 = line
+                    elif 'A3' in line[:2]:
+                        a3 = line
+                    elif 'An' in line[:2]:
+                        k = line
+                    self.test[n-1] = [q, a1, a2, a3, k]
+                except NameError:
+                    pass
+            self.bar.showMessage(self.test_name)
             self.q1.show()
-            self.q1.setText(test_name)
+            self.q1.setText(self.test_name)
             self.next.clicked.disconnect()
             self.next.clicked.connect(self.studSet)
-            self.makeTest()
         else:
             self.close()
-
-    def makeTest(self):
-        self.test_dic = {}
-        try:
-            with open(self.file_name, 'r', encoding='cp1251')as f:
-                lines = len(f.readlines())
-                test_name = f.readline()
-                for i in range(lines):
-                    buf = f.readline().split()
-                    if buf[0] == 'Q':
-                        self.test_dic[buf[1]]
-        except Exception:
-            pass
 
     def studSet(self):
         self.sFrame.show()
@@ -84,90 +129,92 @@ class TestApp(QtWidgets.QMainWindow):
         self.btnStud.rejected.connect(self.sFrame.hide)
         self.btnStud.rejected.connect(self.close)
         self.next.clicked.disconnect()
-        # self.next.clicked.connect(self.testMain)
+        application.hide()
 
     def studWrite(self):
-        # self.q1.show()
+        application.show()
         self.ch1.show()
         self.ch2.show()
         self.ch3.show()
         self.a1.show()
         self.a2.show()
         self.a3.show()
-        self.student = self.lineStud.text()
+        self.student = self.lineStud.text().title()
         self.sFrame.hide()
         self.start_time = time.time()
         self.testMain()
 
     def testMain(self):
+        self.timeSpent()
+        try:
+            tek = self.test[self.q_count]
+            question = tek[0][3:]
+            self.q1.setText(question)
+            answer1 = tek[1][3:]
+            self.a1.setText(answer1)
+            answer2 = tek[2][3:]
+            self.a2.setText(answer2)
+            answer3 = tek[3][3:]
+            self.a3.setText(answer3)
+            key = tek[4][3:]
+            self.next.clicked.connect(lambda: self.answerCheck(key))
+        except KeyError:
+            tek = ['*** No more question','','','','']
+            self.finish()
+        # if self.q_count == 0:
+        #     p = 0
+        # else:
+        #     p = self.result * 100 / self.q_count
+        # self.percent = float("%.1f" % p)
+        # self.bar.showMessage(
+        #                       "Тест:  " + self.test_name + "          Вопрос № " + str(self.q_count+1)
+        # + "          Результат: "  + str(self.percent) + "         Студент " + self.student)
+        self.q_count += 1
+        self.q1.setStyleSheet("background-color:rgb(0, 200, 0)")
+
+    def answerCheck(self, key):
+        self.next.clicked.disconnect()
+        if self.ch1.isChecked():
+            a = 1
+        elif self.ch2.isChecked():
+            a = 2
+        elif self.ch3.isChecked():
+            a = 3
+        else:
+            a = 0
         self.ch1.setChecked(False)
         self.ch2.setChecked(False)
         self.ch3.setChecked(False)
-
-        # self.qst = self.f.readline().strip()
-        # self.answ1 = self.f.readline().strip()
-        # self.answ2 = self.f.readline().strip()
-        # self.answ3 = self.f.readline().strip()
-        # self.answ = self.f.readline().strip()
-        # if not self.qst:
-        #     self.a1.hide()
-        #     self.a2.hide()
-        #     self.a3.hide()
-        #     self.ch1.hide()
-        #     self.ch2.hide()
-        #     self.ch3.hide()
-        #     self.finish()
-        # else:
-        #     self.count += 1
-        #     self.q1.setText(self.qst)
-        #     self.a1.setText(self.answ1)
-        #     self.a2.setText(self.answ2)
-        #     self.a3.setText(self.answ3)
-        #     self.bar.showMessage(self.testName + "                Вопрос №" \
-        #                          + str(self.count) + "           Результат: " \
-        #                          + str(self.percent))
-        #     self.next.clicked.disconnect()
-        #     self.next.clicked.connect(self.answ_check)
-
-    def answerCheck(self):
-        if self.ch1.isChecked():
-            a = '1'
-        elif self.ch2.isChecked():
-            a = '2'
-        elif self.ch3.isChecked():
-            a = '3'
-        else:
-            a = '0'
-        if a == self.answ:
+        if int(key) == a:
             self.result += 1
-        p = self.result * 100 / self.count
-        self.percent = float("%.1f" % p)
-        self.test_main()
+        else:
+            if self.color == 1:
+                self.q1.setStyleSheet("background-color: rgb(255, 0, 0)")
+        QTimer.singleShot(100, self.testMain)
 
     def finish(self):
-        self.stopTime = time.time()
-        self.spendTime = str(float("%.1f" % ((self.stopTime - self.starTime) / 60)))
+        # self.stop_time = time.time()
+        # self.spent_time = str(float("%.1f" % ((self.stop_time - self.start_time) / 60)))
         self.day = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        if self.percent >= 90:
+        if self.percent >= self.mark_5:
             self.mark = '5'
-        elif self.percent >= 70:
+        elif self.percent >= self.mark_4:
             self.mark = '4'
-        elif self.percent >= 45:
+        elif self.percent >= self.mark_3:
             self.mark = '3'
-        elif self.percent >= 30:
+        elif self.percent >= self.mark_2:
             self.mark = '2'
-        elif self.percent <= 29:
+        else:
             self.mark = '1'
         self.rep = ("Дата: " + self.day +
-                    "\nТестируемый: " + self.student.title() +
-                    "\nТема: " + self.testName +
+                    "\nТестируемый: " + self.student +
+                    "\nТема: " + self.test_name +
                     "\nПравильных ответов: " + str(self.result) +
-                    "\nВсего вопросов: " + str(self.count) +
-                    "\nЗатрачено времени: " + str(self.spendTime) + " мин."
-                                                                    "\nРезультативность: " + str(self.percent) + "%"
-                                                                                                                 "\nОценка: " + self.mark + "\n\n")
+                    "\nВсего вопросов: " + str(self.q_count) +
+                    "\nЗатрачено времени: " + str(self.spent_time) + " мин."
+                    "\nРезультативность: " + str(self.percent) + "%"
+                    "\nОценка: " + self.mark + "\n\n")
         self.q1.setText(self.rep)
-        self.next.clicked.disconnect()
         self.next.setText("Закончить")
         self.next.clicked.connect(self.close)
         with open('report.txt', 'a', encoding='utf-8') as f_rep:
@@ -178,13 +225,39 @@ class TestApp(QtWidgets.QMainWindow):
             subprocess.Popen(['notepad.exe', r'report.txt'])
         except Exception as e:
             self.q1.show()
-            e = str(e)
-            self.q1.setText(e.title())
+            self.q1.setText(str(e))
             pass
+
+    def settShow(self):
+        try:
+            subprocess.Popen(['notepad.exe', r'settings.ini'])
+        except Exception:
+            pass
+
+    def timeSpent(self):
+        t = float("%.f" %(time.time() - self.start_time))
+        if t < 10:
+            self.spent_time = str(t)[:1] + ' cek'
+        elif t >= 10:
+            t_m = str(int(t/60))
+            t_s = t - int(t_m*60)
+            self.spent_time = str(t_m) + ':' + str(t_s)
+        if self.q_count == 0:
+            p = 0
+        else:
+            p = self.result * 100 / self.q_count
+        self.percent = float("%.1f" % p)
+        self.bar.showMessage(
+        "Время "  + self.spent_time + "      " + "Тест:  " + self.test_name + "          Вопрос № " + str(self.q_count)
+        + "          Результат: "  + str(self.percent) + "         Студент " + self.student)
+        QTimer.singleShot(1000, self.timeSpent)
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
-            self.finish()
+            try:
+                self.finish()
+            except AttributeError:
+                pass
             self.close()
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Test.ui'
+# Form implementation generated from reading ui file 'Test_design.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.2
 #
@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addItem(spacerItem, 1, 0, 1, 2)
         self.question = QtWidgets.QTextBrowser(self.centralwidget)
         self.question.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.question.sizePolicy().hasHeightForWidth())
@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.question.setFont(font)
-        self.question.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.329773, angle:0, stop:0.295455 rgba(46, 124, 0, 255), stop:1 rgba(255, 255, 255, 255));")
+        self.question.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.329773, angle:0, stop:0.295455 rgba(66, 134, 50, 255), stop:1 rgba(255, 255, 255, 255));")
         self.question.setFrameShape(QtWidgets.QFrame.WinPanel)
         self.question.setFrameShadow(QtWidgets.QFrame.Raised)
         self.question.setObjectName("question")
@@ -67,7 +67,7 @@ class Ui_MainWindow(object):
         self.checkBox1.setObjectName("checkBox1")
         self.gridLayout.addWidget(self.checkBox1, 2, 0, 1, 1)
         self.answer1 = QtWidgets.QTextBrowser(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.answer1.sizePolicy().hasHeightForWidth())
@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
         self.checkBox2.setObjectName("checkBox2")
         self.gridLayout.addWidget(self.checkBox2, 3, 0, 1, 1)
         self.answer2 = QtWidgets.QTextBrowser(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.answer2.sizePolicy().hasHeightForWidth())
@@ -115,7 +115,7 @@ class Ui_MainWindow(object):
         self.checkBox3.setObjectName("checkBox3")
         self.gridLayout.addWidget(self.checkBox3, 4, 0, 1, 1)
         self.answer3 = QtWidgets.QTextBrowser(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.answer3.sizePolicy().hasHeightForWidth())
@@ -144,7 +144,10 @@ class Ui_MainWindow(object):
         self.open.setObjectName("open")
         self.exit = QtWidgets.QAction(MainWindow)
         self.exit.setObjectName("exit")
+        self.settings = QtWidgets.QAction(MainWindow)
+        self.settings.setObjectName("settings")
         self.menu.addAction(self.open)
+        self.menu.addAction(self.settings)
         self.menu.addSeparator()
         self.menu.addAction(self.exit)
         self.menubar.addAction(self.menu.menuAction())
@@ -164,5 +167,6 @@ class Ui_MainWindow(object):
         self.menu.setTitle(_translate("MainWindow", "Меню"))
         self.open.setText(_translate("MainWindow", "Открыть"))
         self.exit.setText(_translate("MainWindow", "Выход"))
+        self.settings.setText(_translate("MainWindow", "Настройки"))
 
 
