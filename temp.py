@@ -1,5 +1,5 @@
-with open(r'C:\Users\Meteoaza\Dropbox\WorkSpace\Docs\Рабочие_Документы\Обучение\Тесты_вопросы\TestForEngrs\SafetyTest.txt', 'r',
-          encoding='utf-8')as f:
+with open(r'/home/meteoaza/Downloads/TestForEngrs/SafetyTest.txt', 'r',
+          encoding='cp1251')as f:
     lines = f.readlines()
     test = {}
     n = 0

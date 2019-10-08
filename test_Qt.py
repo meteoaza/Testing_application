@@ -1,9 +1,13 @@
-import sys, time, subprocess
-from student_name import Ui_Frame
-from Test_design import Ui_MainWindow
+import subprocess
+import sys
+import time
+
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QFileDialog
+
+from Test_design import Ui_MainWindow
+from student_name import Ui_Frame
 
 
 class TestApp(QtWidgets.QMainWindow):
@@ -43,6 +47,7 @@ class TestApp(QtWidgets.QMainWindow):
         self.result = 0
         self.percent = 0
         self.q_count = 0
+        self.fin = True
         self.rep_key = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.rep_key.activated.connect(self.openRep)
         # Settings read from ini file
@@ -112,7 +117,7 @@ class TestApp(QtWidgets.QMainWindow):
                         a3 = line
                     elif 'An' in line[:2]:
                         k = line
-                    self.test[n-1] = [q, a1, a2, a3, k]
+                    self.test[n - 1] = [q, a1, a2, a3, k]
                 except NameError:
                     pass
             self.bar.showMessage(self.test_name)
@@ -143,9 +148,9 @@ class TestApp(QtWidgets.QMainWindow):
         self.sFrame.hide()
         self.start_time = time.time()
         self.testMain()
+        self.timeSpent()
 
     def testMain(self):
-        self.timeSpent()
         try:
             tek = self.test[self.q_count]
             question = tek[0][3:]
@@ -159,20 +164,12 @@ class TestApp(QtWidgets.QMainWindow):
             key = tek[4][3:]
             self.next.clicked.connect(lambda: self.answerCheck(key))
         except KeyError:
-            tek = ['*** No more question','','','','']
+            tek = ['*** No more question', '', '', '', '']
             self.finish()
-        # if self.q_count == 0:
-        #     p = 0
-        # else:
-        #     p = self.result * 100 / self.q_count
-        # self.percent = float("%.1f" % p)
-        # self.bar.showMessage(
-        #                       "Тест:  " + self.test_name + "          Вопрос № " + str(self.q_count+1)
-        # + "          Результат: "  + str(self.percent) + "         Студент " + self.student)
-        self.q_count += 1
         self.q1.setStyleSheet("background-color:rgb(0, 200, 0)")
 
     def answerCheck(self, key):
+        self.q_count += 1
         self.next.clicked.disconnect()
         if self.ch1.isChecked():
             a = 1
@@ -193,8 +190,7 @@ class TestApp(QtWidgets.QMainWindow):
         QTimer.singleShot(100, self.testMain)
 
     def finish(self):
-        # self.stop_time = time.time()
-        # self.spent_time = str(float("%.1f" % ((self.stop_time - self.start_time) / 60)))
+        self.fin = False
         self.day = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         if self.percent >= self.mark_5:
             self.mark = '5'
@@ -206,19 +202,27 @@ class TestApp(QtWidgets.QMainWindow):
             self.mark = '2'
         else:
             self.mark = '1'
+
         self.rep = ("Дата: " + self.day +
                     "\nТестируемый: " + self.student +
                     "\nТема: " + self.test_name +
                     "\nПравильных ответов: " + str(self.result) +
                     "\nВсего вопросов: " + str(self.q_count) +
                     "\nЗатрачено времени: " + str(self.spent_time) + " мин."
-                    "\nРезультативность: " + str(self.percent) + "%"
-                    "\nОценка: " + self.mark + "\n\n")
-        self.q1.setText(self.rep)
-        self.next.setText("Закончить")
-        self.next.clicked.connect(self.close)
+                                                                     "\nРезультативность: " + str(self.percent) + "%"
+                                                                                                                  "\nОценка: " + self.mark + "\n\n")
         with open('report.txt', 'a', encoding='utf-8') as f_rep:
             f_rep.write(self.rep)
+        self.q_count = 0
+        self.q1.setText(self.rep)
+        self.a1.hide()
+        self.a2.hide()
+        self.a3.hide()
+        self.ch1.hide()
+        self.ch2.hide()
+        self.ch3.hide()
+        self.next.setText("Закончить")
+        self.next.clicked.connect(self.close)
 
     def openRep(self):
         try:
@@ -235,22 +239,30 @@ class TestApp(QtWidgets.QMainWindow):
             pass
 
     def timeSpent(self):
-        t = float("%.f" %(time.time() - self.start_time))
-        if t < 10:
-            self.spent_time = str(t)[:1] + ' cek'
-        elif t >= 10:
-            t_m = str(int(t/60))
-            t_s = t - int(t_m*60)
-            self.spent_time = str(t_m) + ':' + str(t_s)
-        if self.q_count == 0:
-            p = 0
+        if self.fin:
+            t = int(time.time()) - int(self.start_time)
+            if t >= 60:
+                tm = int(t / 60)
+                ts = t - tm * 60
+            else:
+                tm = 0
+                ts = t
+            if ts < 10:
+                self.spent_time = str(tm) + ":0" + str(ts)
+            else:
+                self.spent_time = str(tm) + ":" + str(ts)
+            if self.q_count == 0:
+                p = 0
+            else:
+                p = self.result * 100 / self.q_count
+            self.percent = float("%.1f" % p)
+            self.bar.showMessage(
+                "Время " + self.spent_time + "      " + "Тест:  " + self.test_name + "          Вопрос № " + str(
+                    self.q_count + 1)
+                + "          Результат: " + str(self.percent) + " %         Студент " + self.student)
+            QTimer.singleShot(1000, self.timeSpent)
         else:
-            p = self.result * 100 / self.q_count
-        self.percent = float("%.1f" % p)
-        self.bar.showMessage(
-        "Время "  + self.spent_time + "      " + "Тест:  " + self.test_name + "          Вопрос № " + str(self.q_count)
-        + "          Результат: "  + str(self.percent) + "         Студент " + self.student)
-        QTimer.singleShot(1000, self.timeSpent)
+            pass
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:

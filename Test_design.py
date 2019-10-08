@@ -2,9 +2,10 @@
 
 # Form implementation generated from reading ui file 'Test_design.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.2
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -12,13 +13,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1305, 866)
+        MainWindow.resize(853, 607)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QtCore.QSize(0, 0))
+        MainWindow.setMinimumSize(QtCore.QSize(853, 607))
         MainWindow.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.329773, angle:0, stop:0.0227273 rgba(27, 124, 158, 192), stop:1 rgba(255, 255, 255, 255));")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -37,7 +38,7 @@ class Ui_MainWindow(object):
         self.next.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.529, angle:0, stop:0.215909 rgba(38, 174, 23, 255), stop:1 rgba(255, 255, 255, 255));")
         self.next.setObjectName("next")
         self.gridLayout.addWidget(self.next, 5, 1, 1, 1, QtCore.Qt.AlignLeft|QtCore.Qt.AlignBottom)
-        spacerItem = QtWidgets.QSpacerItem(0, 100, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(0, 50, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 1, 0, 1, 2)
         self.question = QtWidgets.QTextBrowser(self.centralwidget)
         self.question.setEnabled(True)
@@ -46,13 +47,13 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.question.sizePolicy().hasHeightForWidth())
         self.question.setSizePolicy(sizePolicy)
-        self.question.setMinimumSize(QtCore.QSize(0, 300))
+        self.question.setMinimumSize(QtCore.QSize(0, 250))
         font = QtGui.QFont()
         font.setPointSize(20)
         font.setBold(True)
         font.setWeight(75)
         self.question.setFont(font)
-        self.question.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.329773, angle:0, stop:0.295455 rgba(66, 134, 50, 255), stop:1 rgba(255, 255, 255, 255));")
+        self.question.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.329773, angle:0, stop:0.295455 rgba(46, 124, 0, 255), stop:1 rgba(255, 255, 255, 255));")
         self.question.setFrameShape(QtWidgets.QFrame.WinPanel)
         self.question.setFrameShadow(QtWidgets.QFrame.Raised)
         self.question.setObjectName("question")
@@ -72,8 +73,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.answer1.sizePolicy().hasHeightForWidth())
         self.answer1.setSizePolicy(sizePolicy)
-        self.answer1.setMinimumSize(QtCore.QSize(0, 100))
-        self.answer1.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.answer1.setMinimumSize(QtCore.QSize(0, 0))
+        self.answer1.setMaximumSize(QtCore.QSize(16777215, 80))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -96,8 +97,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.answer2.sizePolicy().hasHeightForWidth())
         self.answer2.setSizePolicy(sizePolicy)
-        self.answer2.setMinimumSize(QtCore.QSize(0, 100))
-        self.answer2.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.answer2.setMinimumSize(QtCore.QSize(0, 0))
+        self.answer2.setMaximumSize(QtCore.QSize(16777215, 80))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -120,8 +121,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.answer3.sizePolicy().hasHeightForWidth())
         self.answer3.setSizePolicy(sizePolicy)
-        self.answer3.setMinimumSize(QtCore.QSize(0, 100))
-        self.answer3.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.answer3.setMinimumSize(QtCore.QSize(0, 0))
+        self.answer3.setMaximumSize(QtCore.QSize(16777215, 80))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -132,12 +133,17 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1305, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 853, 30))
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.statusbar.setFont(font)
+        self.statusbar.setStyleSheet("color: rgb(0, 0, 161);")
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.open = QtWidgets.QAction(MainWindow)
@@ -162,11 +168,12 @@ class Ui_MainWindow(object):
         self.question.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:20pt; font-weight:600; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:15pt;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:20pt; font-weight:600; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:15pt;\"><br /></p></body></html>"))
         self.menu.setTitle(_translate("MainWindow", "Меню"))
         self.open.setText(_translate("MainWindow", "Открыть"))
+        self.open.setShortcut(_translate("MainWindow", "Ctrl+O"))
         self.exit.setText(_translate("MainWindow", "Выход"))
+        self.exit.setShortcut(_translate("MainWindow", "Ctrl+X"))
         self.settings.setText(_translate("MainWindow", "Настройки"))
-
-
+        self.settings.setShortcut(_translate("MainWindow", "Ctrl+S"))
