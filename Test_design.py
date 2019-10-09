@@ -2,10 +2,9 @@
 
 # Form implementation generated from reading ui file 'Test_design.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -13,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(853, 607)
+        MainWindow.resize(991, 683)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -42,20 +41,24 @@ class Ui_MainWindow(object):
         self.gridLayout.addItem(spacerItem, 1, 0, 1, 2)
         self.question = QtWidgets.QTextBrowser(self.centralwidget)
         self.question.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.question.sizePolicy().hasHeightForWidth())
         self.question.setSizePolicy(sizePolicy)
         self.question.setMinimumSize(QtCore.QSize(0, 250))
         font = QtGui.QFont()
-        font.setPointSize(20)
+        font.setFamily("Arial Rounded MT Bold")
+        font.setPointSize(25)
         font.setBold(True)
         font.setWeight(75)
         self.question.setFont(font)
         self.question.setStyleSheet("background-color: qconicalgradient(cx:1, cy:0.329773, angle:0, stop:0.295455 rgba(46, 124, 0, 255), stop:1 rgba(255, 255, 255, 255));")
         self.question.setFrameShape(QtWidgets.QFrame.WinPanel)
         self.question.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.question.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContentsOnFirstShow)
+        self.question.setAutoFormatting(QtWidgets.QTextEdit.AutoAll)
+        self.question.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
         self.question.setObjectName("question")
         self.gridLayout.addWidget(self.question, 0, 0, 1, 2)
         self.checkBox1 = QtWidgets.QCheckBox(self.centralwidget)
@@ -76,7 +79,8 @@ class Ui_MainWindow(object):
         self.answer1.setMinimumSize(QtCore.QSize(0, 0))
         self.answer1.setMaximumSize(QtCore.QSize(16777215, 80))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.answer1.setFont(font)
@@ -100,7 +104,8 @@ class Ui_MainWindow(object):
         self.answer2.setMinimumSize(QtCore.QSize(0, 0))
         self.answer2.setMaximumSize(QtCore.QSize(16777215, 80))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.answer2.setFont(font)
@@ -124,7 +129,8 @@ class Ui_MainWindow(object):
         self.answer3.setMinimumSize(QtCore.QSize(0, 0))
         self.answer3.setMaximumSize(QtCore.QSize(16777215, 80))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.answer3.setFont(font)
@@ -133,7 +139,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 853, 30))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 991, 21))
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
@@ -168,7 +174,7 @@ class Ui_MainWindow(object):
         self.question.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:20pt; font-weight:600; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'Arial Rounded MT Bold\'; font-size:25pt; font-weight:600; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:15pt;\"><br /></p></body></html>"))
         self.menu.setTitle(_translate("MainWindow", "Меню"))
         self.open.setText(_translate("MainWindow", "Открыть"))
@@ -177,3 +183,5 @@ class Ui_MainWindow(object):
         self.exit.setShortcut(_translate("MainWindow", "Ctrl+X"))
         self.settings.setText(_translate("MainWindow", "Настройки"))
         self.settings.setShortcut(_translate("MainWindow", "Ctrl+S"))
+
+
