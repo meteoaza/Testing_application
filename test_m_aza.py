@@ -45,41 +45,6 @@ class TestApp(QtWidgets.QMainWindow):
             ch.hide()
         self.rep_key = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.rep_key.activated.connect(self.openRep)
-        # Settings read from ini file
-        try:
-            with open('settings.ini', 'r', encoding='utf-8')as f:
-                lines = f.readlines()
-        except FileNotFoundError:
-            with open('settings.ini', 'w', encoding='utf-8')as f:
-                text = "SetCol 0\nRandom 0\nSetTry 20\nSetM_5 90 %\nSetM_4 70 %\nSetM_3 45 %\nSetM_2 30 %\n"
-                text1 = "S etCol - (1:вкл, 0:отк) для отображения ошибок красным цветом\nR andom - (1:вкл, 0:отк) "\
-                        "перемешать вопросы\nS etTry - количество вопросов в тесте\nS et_M  - критерии для оценок\n "\
-                        "\n\nПодсказка для создания файла 'ваш_тест.txt':\nName - название теста\nQs  -  вопрос\nA1  -"\
-                        "  ответ1\nA2  -  ответ2\nA3  -  ответ3\nAn  -  правильный ответ "
-                f.write(text + '\n\n' + text1)
-            time.sleep(0.5)
-            with open('settings.ini', 'r', encoding='utf-8')as f:
-                lines = f.readlines()
-        try:
-            for line in lines:
-                if 'SetCol' in line[:7]:
-                    self.color = int(line[7:9])
-                elif 'Random' in line[:7]:
-                    self.rand = int(line[7:9])
-                elif 'SetTry' in line[:7]:
-                    self.q_try = int(line[7:9])
-                elif 'SetM_5' in line[:7]:
-                    self.mark_5 = int(line[7:9])
-                elif 'SetM_4' in line[:7]:
-                    self.mark_4 = int(line[7:9])
-                elif 'SetM_3' in line[:7]:
-                    self.mark_3 = int(line[7:9])
-                elif 'SetM_2' in line[:7]:
-                    self.mark_2 = int(line[7:9])
-        except Exception as e:
-            self.q1.show()
-            self.q1.setText('Settings error!!! ')
-        pass
 
     def fileOpen(self):
         # Open test file and create question-answer dictionary
@@ -115,9 +80,9 @@ class TestApp(QtWidgets.QMainWindow):
                             self.test.update({n: t})
                             n += 1
                             t = []
-            self.bar.showMessage(self.test_name)
             self.q1.setStyleSheet('background: url(bkgnd.png)')
             self.q1.show()
+            # self.q1.clear()
             self.q1.setText(self.test_name)
             self.next.clicked.disconnect()
             self.next.setText('Далее')
@@ -126,26 +91,61 @@ class TestApp(QtWidgets.QMainWindow):
             self.close()
 
     def studSet(self):
+        # Student name input frame
         self.sFrame.show()
+        application.hide()
+        self.next.clicked.disconnect()
         self.btnStud.accepted.connect(self.testInit)
         self.btnStud.rejected.connect(self.sFrame.hide)
         self.btnStud.rejected.connect(self.close)
-        self.next.clicked.disconnect()
-        application.hide()
 
     def testInit(self):
-        self.student = self.lineStud.text().title()
-        self.sFrame.hide()
-        application.show()
-        for a in self.a_dic.values():
-            a.show()
-        for ch in self.ch_dic.values():
-            ch.show()
+        # Settings read from ini file
+        try:
+            with open('settings.ini', 'r', encoding='utf-8')as f:
+                lines = f.readlines()
+        except FileNotFoundError:
+            with open('settings.ini', 'w', encoding='utf-8')as f:
+                text = "SetCol 0\nRandom 0\nSetTry 20\nSetM_5 90 %\nSetM_4 70 %\nSetM_3 45 %\nSetM_2 30 %\n"
+                text1 = "S etCol - (1:вкл, 0:отк) для отображения ошибок красным цветом\nR andom - (1:вкл, 0:отк) " \
+                        "перемешать вопросы\nS etTry - количество вопросов в тесте\nS et_M  - критерии для оценок\n " \
+                        "\n\nПодсказка для создания файла 'ваш_тест.txt':\nName - название теста\nQs  -  вопрос\nA1  -" \
+                        "  ответ1\nA2  -  ответ2\nA3  -  ответ3\nA4  -  ответ4\nA5  -  ответ5\nAn  -  правильный ответ "
+                f.write(text + '\n\n' + text1)
+            time.sleep(0.5)
+            with open('settings.ini', 'r', encoding='utf-8')as f:
+                lines = f.readlines()
+        try:
+            for line in lines:
+                if 'SetCol' in line[:7]:
+                    self.color = int(line[7:9])
+                elif 'Random' in line[:7]:
+                    self.rand = int(line[7:9])
+                elif 'SetTry' in line[:7]:
+                    self.q_try = int(line[7:9])
+                elif 'SetM_5' in line[:7]:
+                    self.mark_5 = int(line[7:9])
+                elif 'SetM_4' in line[:7]:
+                    self.mark_4 = int(line[7:9])
+                elif 'SetM_3' in line[:7]:
+                    self.mark_3 = int(line[7:9])
+                elif 'SetM_2' in line[:7]:
+                    self.mark_2 = int(line[7:9])
+        except Exception as e:
+            self.q1.show()
+            self.q1.setText('Settings error!!! ')
+        # Define variables
+        self.fin = True
+        self.q_num_list = []
         self.result = 0
         self.percent = 0
         self.q_count = 0
+        self.start_time = time.time()
+        self.student = self.lineStud.text().title()
+        # Check if questions in settings not exceed questions in self.test dictionary
         if self.q_try > len(self.test):
             self.q_try = len(self.test)
+        # Vars for messagebar (random and color)
         if self.rand:
             self.ifrand = 'ВКЛ'
         else:
@@ -154,13 +154,13 @@ class TestApp(QtWidgets.QMainWindow):
             self.ifcolor = 'ВКЛ'
         else:
             self.ifcolor = 'ОТКЛ'
-        self.fin = True
-        self.q_num_list = []
-        self.start_time = time.time()
-        self.testMain()
-        self.timeSpent()
+        self.sFrame.hide()
+        application.show()
+        self.next.setText("Поехали!")
+        self.next.clicked.connect(self.testMain)
 
     def testMain(self):
+        self.timeSpent()
         if self.q_try:
             if not self.rand:
                 self.q_num = self.q_count
@@ -174,17 +174,26 @@ class TestApp(QtWidgets.QMainWindow):
                 tek = self.test[self.q_num]
                 question = tek[0][3:]
                 self.q1.setText(question)
+                frame = 1
                 for k, a in self.a_dic.items():
                     try:
                         tek_a = tek[k]
+                        if 'An' in tek_a:
+                            pass
+                        else:
+                            a.setText(tek_a[3:])
+                            frame += 1
                     except IndexError:
-                        tek_a = " "
-                    if 'An' in tek_a:
                         pass
-                    else:
-                        a.setText(tek_a[3:])
                 key = [int(i) for i in tek[-1][3:].split()]
                 key.sort()
+                for i in range(1, frame):
+                    a = self.a_dic[i]
+                    a.show()
+                    ch = self.ch_dic[i]
+                    ch.show()
+                self.next.clicked.disconnect()
+                self.next.setText("Далее")
                 self.next.clicked.connect(lambda: self.answerCheck(key))
             except KeyError:
                 tek = ['*** No more question', '', '', '', '']
@@ -196,7 +205,6 @@ class TestApp(QtWidgets.QMainWindow):
     def answerCheck(self, key):
         self.q_count += 1
         self.q_try -= 1
-        self.next.clicked.disconnect()
         answer = []
         for k, v in self.ch_dic.items():
             if v.isChecked():
@@ -214,6 +222,10 @@ class TestApp(QtWidgets.QMainWindow):
         else:
             p = self.result * 100 / self.q_count
         self.percent = float("%.1f" % p)
+        for a in self.a_dic.values():
+            a.hide()
+        for ch in self.ch_dic.values():
+            ch.hide()
         QTimer.singleShot(100, self.testMain)
 
     def finish(self):
@@ -229,25 +241,25 @@ class TestApp(QtWidgets.QMainWindow):
             self.mark = '2'
         else:
             self.mark = '1'
-
-        self.rep = ("Дата: " + self.day +
-                    "\nТестируемый: " + self.student +
-                    "\nТема: " + self.test_name +
-                    "\nПравильных ответов: " + str(self.result) +
-                    "\nВсего вопросов: " + str(self.q_count) +
-                    "\nЗатрачено времени: " + str(self.spent_time) + " мин."
-                                                                     "\nРезультативность: " + str(self.percent) + "%"
-                                                                                                                  "\nОценка: " + self.mark + "\n\n")
+        if int(self.mark) > 3:
+            self.q1.setStyleSheet("background-color:rgb(91, 213, 89)")
+        else:
+            self.q1.setStyleSheet("background-color: rgb(255, 0, 0)")
+        self.rep = (
+                "Дата: " + self.day +
+                "\nТестируемый: " + self.student +
+                "\nТема: " + self.test_name +
+                "\nПравильных ответов: " + str(self.result) +
+                "\nВсего вопросов: " + str(self.q_count) +
+                "\nЗатрачено времени: " + str(self.spent_time) + " мин."
+                                                                 "\nРезультативность: " + str(self.percent) + "%"
+                                                                                                              "\nОценка: " + self.mark + "\n\n")
         with open('report.txt', 'a', encoding='utf-8') as f_rep:
             f_rep.write(self.rep)
         self.q1.setText(self.rep)
-        for a in self.a_dic.values():
-            a.hide()
-        for ch in self.ch_dic.values():
-            ch.hide()
+        self.next.clicked.disconnect()
         self.next.setText("Закончить")
         self.next.clicked.connect(self.close)
-
 
     def openRep(self):
         try:
@@ -276,15 +288,15 @@ class TestApp(QtWidgets.QMainWindow):
             else:
                 self.spent_time = str(tm) + ":" + str(ts)
             self.bar.showMessage(
-            "Время " + self.spent_time + "      " + "Тест:  " + self.test_name + "          Вопрос № " + str(
-                self.q_count + 1)
-            + "          Результат: " + str(self.percent) + " %         Студент " + self.student + "         " +
-            " Вопросов " + str(self.q_try) + "             Случайно  " + self.ifrand + "           Контроль  "
-            + self.ifcolor
+                "Время " + self.spent_time + "      " + "Тест:  " + self.test_name + "          Вопрос № " + str(
+                    self.q_count + 1)
+                + "          Результат: " + str(self.percent) + " %         Студент " + self.student + "         " +
+                " Вопросов " + str(self.q_try) + "             Случайно  " + self.ifrand + "           Контроль  "
+                + self.ifcolor
             )
-            QTimer.singleShot(1000, self.timeSpent)
+            QTimer.singleShot(500, self.timeSpent)
         else:
-            pass
+            self.bar.showMessage(" ")
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
