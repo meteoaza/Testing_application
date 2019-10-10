@@ -20,12 +20,14 @@ class TestApp(QtWidgets.QMainWindow):
         self.ui_s = Ui_Frame()
         self.ui_s.setupUi(self.sFrame)
         self.q1 = self.ui.question
-        self.a1 = self.ui.answer1
-        self.a2 = self.ui.answer2
-        self.a3 = self.ui.answer3
-        self.ch1 = self.ui.checkBox1
-        self.ch2 = self.ui.checkBox2
-        self.ch3 = self.ui.checkBox3
+        self.a_dic = {
+            1: self.ui.answer1, 2: self.ui.answer2,
+            3: self.ui.answer3, 4: self.ui.answer4, 5: self.ui.answer5
+        }
+        self.ch_dic = {
+            1: self.ui.checkBox1, 2: self.ui.checkBox2,
+            3: self.ui.checkBox3, 4: self.ui.checkBox4, 5: self.ui.checkBox5
+        }
         self.next = self.ui.next
         self.open = self.ui.open
         self.settings = self.ui.settings
@@ -37,13 +39,10 @@ class TestApp(QtWidgets.QMainWindow):
         self.open.triggered.connect(self.fileOpen)
         self.settings.triggered.connect(self.settShow)
         self.exit.triggered.connect(sys.exit)
-        self.q1.hide()
-        self.a1.hide()
-        self.a2.hide()
-        self.a3.hide()
-        self.ch1.hide()
-        self.ch2.hide()
-        self.ch3.hide()
+        for a in self.a_dic.values():
+            a.hide()
+        for ch in self.ch_dic.values():
+            ch.hide()
         self.rep_key = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.rep_key.activated.connect(self.openRep)
         # Settings read from ini file
@@ -106,22 +105,16 @@ class TestApp(QtWidgets.QMainWindow):
                 except Exception:
                     pass
             n = 0
+            t = []
+            test_dic = dict.fromkeys(('Qs', 'A1', 'A2', 'A3', 'A4', 'A5', 'An'), 0)
             for line in lines:
-                try:
-                    if 'Qs' in line[:2]:
-                        q = line
-                        n += 1
-                    elif 'A1' in line[:2]:
-                        a1 = line
-                    elif 'A2' in line[:2]:
-                        a2 = line
-                    elif 'A3' in line[:2]:
-                        a3 = line
-                    elif 'An' in line[:2]:
-                        k = line
-                    self.test[n - 1] = [q, a1, a2, a3, k]
-                except NameError:
-                    pass
+                for k in test_dic.keys():
+                    if k in line[:3]:
+                        t.append(line)
+                        if 'An' in line[:3]:
+                            self.test.update({n: t})
+                            n += 1
+                            t = []
             self.bar.showMessage(self.test_name)
             self.q1.setStyleSheet('background: url(bkgnd.png)')
             self.q1.show()
@@ -144,12 +137,10 @@ class TestApp(QtWidgets.QMainWindow):
         self.student = self.lineStud.text().title()
         self.sFrame.hide()
         application.show()
-        self.ch1.show()
-        self.ch2.show()
-        self.ch3.show()
-        self.a1.show()
-        self.a2.show()
-        self.a3.show()
+        for a in self.a_dic.values():
+            a.show()
+        for ch in self.ch_dic.values():
+            ch.show()
         self.result = 0
         self.percent = 0
         self.q_count = 0
@@ -183,13 +174,17 @@ class TestApp(QtWidgets.QMainWindow):
                 tek = self.test[self.q_num]
                 question = tek[0][3:]
                 self.q1.setText(question)
-                answer1 = tek[1][3:]
-                self.a1.setText(answer1)
-                answer2 = tek[2][3:]
-                self.a2.setText(answer2)
-                answer3 = tek[3][3:]
-                self.a3.setText(answer3)
-                key = tek[4][3:]
+                for k, a in self.a_dic.items():
+                    try:
+                        tek_a = tek[k]
+                    except IndexError:
+                        tek_a = " "
+                    if 'An' in tek_a:
+                        pass
+                    else:
+                        a.setText(tek_a[3:])
+                key = [int(i) for i in tek[-1][3:].split()]
+                key.sort()
                 self.next.clicked.connect(lambda: self.answerCheck(key))
             except KeyError:
                 tek = ['*** No more question', '', '', '', '']
@@ -202,18 +197,14 @@ class TestApp(QtWidgets.QMainWindow):
         self.q_count += 1
         self.q_try -= 1
         self.next.clicked.disconnect()
-        if self.ch1.isChecked():
-            a = 1
-        elif self.ch2.isChecked():
-            a = 2
-        elif self.ch3.isChecked():
-            a = 3
-        else:
-            a = 0
-        self.ch1.setChecked(False)
-        self.ch2.setChecked(False)
-        self.ch3.setChecked(False)
-        if int(key) == a:
+        answer = []
+        for k, v in self.ch_dic.items():
+            if v.isChecked():
+                answer.append(k)
+                v.setChecked(False)
+        for a in self.a_dic.values():
+            a.clear()
+        if key == answer:
             self.result += 1
         else:
             if self.color == 1:
@@ -250,12 +241,10 @@ class TestApp(QtWidgets.QMainWindow):
         with open('report.txt', 'a', encoding='utf-8') as f_rep:
             f_rep.write(self.rep)
         self.q1.setText(self.rep)
-        self.a1.hide()
-        self.a2.hide()
-        self.a3.hide()
-        self.ch1.hide()
-        self.ch2.hide()
-        self.ch3.hide()
+        for a in self.a_dic.values():
+            a.hide()
+        for ch in self.ch_dic.values():
+            ch.hide()
         self.next.setText("Закончить")
         self.next.clicked.connect(self.close)
 

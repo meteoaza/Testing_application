@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>991</width>
-    <height>683</height>
+       <width>1230</width>
+       <height>798</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -38,43 +38,18 @@
       <property name="rightMargin">
        <number>0</number>
       </property>
-      <item row="5" column="1" alignment="Qt::AlignLeft|Qt::AlignBottom">
-       <widget class="QPushButton" name="next">
+         <item row="2" column="0">
+             <widget class="QCheckBox" name="checkBox1">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+            <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: qconicalgradient(cx:1, cy:0.529, angle:0, stop:0.215909 rgba(38, 174, 23, 255), stop:1 rgba(255, 255, 255, 255));</string>
         </property>
         <property name="text">
-         <string>Далее</string>
+            <string/>
         </property>
        </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <spacer name="horizontalSpacer">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>50</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QTextBrowser" name="question">
@@ -128,21 +103,26 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="checkBox1">
+         <item row="7" column="1" alignment="Qt::AlignLeft|Qt::AlignBottom">
+             <widget class="QPushButton" name="next">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+                 <property name="styleSheet">
+                     <string notr="true">background-color: qconicalgradient(cx:1, cy:0.529, angle:0, stop:0.215909
+                         rgba(38, 174, 23, 255), stop:1 rgba(255, 255, 255, 255));
+                     </string>
+                 </property>
         <property name="text">
-         <string/>
+            <string>Далее</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QTextBrowser" name="answer1">
+         <item row="5" column="1">
+             <widget class="QTextBrowser" name="answer4">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -184,8 +164,8 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QTextBrowser" name="answer2">
+         <item row="4" column="1">
+             <widget class="QTextBrowser" name="answer3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -227,8 +207,38 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QTextBrowser" name="answer3">
+         <item row="3" column="1">
+             <widget class="QTextBrowser" name="answer2">
+                 <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                     </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                     <size>
+                         <width>0</width>
+                         <height>0</height>
+                     </size>
+                 </property>
+                 <property name="maximumSize">
+                     <size>
+                         <width>16777215</width>
+                         <height>80</height>
+                     </size>
+                 </property>
+                 <property name="font">
+                     <font>
+                         <family>Times New Roman</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                     </font>
+                 </property>
+             </widget>
+         </item>
+         <item row="2" column="1">
+             <widget class="QTextBrowser" name="answer1">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -257,6 +267,84 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
+         <item row="1" column="0" colspan="2">
+             <spacer name="horizontalSpacer">
+                 <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                     </sizepolicy>
+                 </property>
+                 <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                     <size>
+                         <width>0</width>
+                         <height>50</height>
+                     </size>
+                 </property>
+             </spacer>
+         </item>
+         <item row="6" column="1">
+             <widget class="QTextBrowser" name="answer5">
+                 <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                     </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                     <size>
+                         <width>0</width>
+                         <height>0</height>
+                     </size>
+                 </property>
+                 <property name="maximumSize">
+                     <size>
+                         <width>16777215</width>
+                         <height>80</height>
+                     </size>
+                 </property>
+                 <property name="font">
+                     <font>
+                         <family>Times New Roman</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                     </font>
+                 </property>
+             </widget>
+         </item>
+         <item row="5" column="0">
+             <widget class="QCheckBox" name="checkBox4">
+                 <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                     </sizepolicy>
+                 </property>
+                 <property name="text">
+                     <string/>
+                 </property>
+             </widget>
+         </item>
+         <item row="6" column="0">
+             <widget class="QCheckBox" name="checkBox5">
+                 <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                     </sizepolicy>
+                 </property>
+                 <property name="text">
+                     <string/>
+                 </property>
+             </widget>
+         </item>
      </layout>
     </item>
    </layout>
@@ -266,7 +354,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>991</width>
+        <width>1230</width>
      <height>21</height>
     </rect>
    </property>
