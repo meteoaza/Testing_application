@@ -2,13 +2,17 @@ import subprocess
 import sys
 import time
 import random
+import os
+import winreg
 
 from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QFrame, QShortcut
 
 from Test_design import Ui_MainWindow
-from student_name import Ui_Frame
+from student_name import Ui_Frame as Stud
+from Test_sett_design import Ui_Frame as Settings
 
 
 class TestApp(QtWidgets.QMainWindow):
@@ -16,9 +20,12 @@ class TestApp(QtWidgets.QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.sFrame = QtWidgets.QFrame()
-        self.ui_s = Ui_Frame()
-        self.ui_s.setupUi(self.sFrame)
+        self.studFrame = QFrame()
+        self._s = Stud()
+        self._s.setupUi(self.studFrame)
+        self.settFrame = QFrame()
+        self._set = Settings()
+        self._set.setupUi(self.settFrame)
         self.q1 = self.ui.question
         self.a_dic = {
             1: self.ui.answer1, 2: self.ui.answer2,
@@ -29,22 +36,32 @@ class TestApp(QtWidgets.QMainWindow):
             3: self.ui.checkBox3, 4: self.ui.checkBox4, 5: self.ui.checkBox5
         }
         self.next = self.ui.next
+        self.print = self.ui.print
         self.open = self.ui.open
         self.settings = self.ui.settings
         self.exit = self.ui.exit
+        self.about = self.ui.about
         self.bar = self.ui.statusbar
-        self.btnStud = self.ui_s.buttonBox
-        self.lineStud = self.ui_s.student
+        self.btnStud = self._s.buttonBox
+        self.lineStud = self._s.student
         self.next.clicked.connect(self.fileOpen)
+        self.print.clicked.connect(self.printer)
         self.open.triggered.connect(self.fileOpen)
-        self.settings.triggered.connect(self.settShow)
+        self.settings.triggered.connect(self.settFrameShow)
+        self.about.triggered.connect(self.aboutMenu)
         self.exit.triggered.connect(sys.exit)
+        self.q1.hide()
+        self.print.hide()
         for a in self.a_dic.values():
             a.hide()
         for ch in self.ch_dic.values():
             ch.hide()
-        self.rep_key = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
+        self.rep_key = QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.rep_key.activated.connect(self.openRep)
+        self.ui.centralwidget.setStyleSheet('background: url(bkgnd.png)')
+        self.font1 = QFont("Comic Sans Ms", 20, QFont.DemiBold, QFont.AnyStyle)
+        self.font2 = QFont("Arial Rounded MT Bold", 25, QFont.Bold)
+
 
     def fileOpen(self):
         # Open test file and create question-answer dictionary
@@ -66,7 +83,7 @@ class TestApp(QtWidgets.QMainWindow):
                     if not 'Name' in lines[0]:
                         self.test_name = 'Не найдено название теста'
                     elif 'Name' in line[:5]:
-                        self.test_name = line[5:]
+                        self.test_name = line[6:]
                 except Exception:
                     pass
             n = 0
@@ -80,60 +97,30 @@ class TestApp(QtWidgets.QMainWindow):
                             self.test.update({n: t})
                             n += 1
                             t = []
-            self.q1.setStyleSheet('background: url(bkgnd.png)')
             self.q1.show()
-            # self.q1.clear()
-            self.q1.setText(self.test_name)
+            self.q1.setText("\n\n" + self.test_name)
+            self.q1.setStyleSheet("")
+            self.q1.setFrameStyle(QFrame.NoFrame)
             self.next.clicked.disconnect()
             self.next.setText('Далее')
             self.next.clicked.connect(self.studSet)
+            self.print.hide()
+            self.ui.menubar.hide()
+            self.ui.centralwidget.setStyleSheet('background: url(bkgnd.png)')
         else:
             self.close()
 
     def studSet(self):
         # Student name input frame
-        self.sFrame.show()
+        self.studFrame.show()
         application.hide()
         self.next.clicked.disconnect()
         self.btnStud.accepted.connect(self.testInit)
-        self.btnStud.rejected.connect(self.sFrame.hide)
+        self.btnStud.rejected.connect(self.studFrame.hide)
         self.btnStud.rejected.connect(self.close)
 
     def testInit(self):
-        # Settings read from ini file
-        try:
-            with open('settings.ini', 'r', encoding='utf-8')as f:
-                lines = f.readlines()
-        except FileNotFoundError:
-            with open('settings.ini', 'w', encoding='utf-8')as f:
-                text = "SetCol 0\nRandom 0\nSetTry 20\nSetM_5 90 %\nSetM_4 70 %\nSetM_3 45 %\nSetM_2 30 %\n"
-                text1 = "S etCol - (1:вкл, 0:отк) для отображения ошибок красным цветом\nR andom - (1:вкл, 0:отк) " \
-                        "перемешать вопросы\nS etTry - количество вопросов в тесте\nS et_M  - критерии для оценок\n " \
-                        "\n\nПодсказка для создания файла 'ваш_тест.txt':\nName - название теста\nQs  -  вопрос\nA1  -" \
-                        "  ответ1\nA2  -  ответ2\nA3  -  ответ3\nA4  -  ответ4\nA5  -  ответ5\nAn  -  правильный ответ "
-                f.write(text + '\n\n' + text1)
-            time.sleep(0.5)
-            with open('settings.ini', 'r', encoding='utf-8')as f:
-                lines = f.readlines()
-        try:
-            for line in lines:
-                if 'SetCol' in line[:7]:
-                    self.color = int(line[7:9])
-                elif 'Random' in line[:7]:
-                    self.rand = int(line[7:9])
-                elif 'SetTry' in line[:7]:
-                    self.q_try = int(line[7:9])
-                elif 'SetM_5' in line[:7]:
-                    self.mark_5 = int(line[7:9])
-                elif 'SetM_4' in line[:7]:
-                    self.mark_4 = int(line[7:9])
-                elif 'SetM_3' in line[:7]:
-                    self.mark_3 = int(line[7:9])
-                elif 'SetM_2' in line[:7]:
-                    self.mark_2 = int(line[7:9])
-        except Exception as e:
-            self.q1.show()
-            self.q1.setText('Settings error!!! ')
+        self.settRead()
         # Define variables
         self.fin = True
         self.q_num_list = []
@@ -154,8 +141,10 @@ class TestApp(QtWidgets.QMainWindow):
             self.ifcolor = 'ВКЛ'
         else:
             self.ifcolor = 'ОТКЛ'
-        self.sFrame.hide()
+        self.studFrame.hide()
         application.show()
+        self.q1.setFont(self.font1)
+        self.q1.setText("\n\n\n" + self.student + ", желаю удачи в прохождении теста:\n" + self.test_name)
         self.next.setText("Поехали!")
         self.next.clicked.connect(self.testMain)
 
@@ -173,7 +162,6 @@ class TestApp(QtWidgets.QMainWindow):
             try:
                 tek = self.test[self.q_num]
                 question = tek[0][3:]
-                self.q1.setText(question)
                 frame = 1
                 for k, a in self.a_dic.items():
                     try:
@@ -192,13 +180,18 @@ class TestApp(QtWidgets.QMainWindow):
                     a.show()
                     ch = self.ch_dic[i]
                     ch.show()
-                self.next.clicked.disconnect()
+                self.next.show()
+                self.q1.setFont(self.font2)
+                self.q1.setText(question)
+                self.q1.setFrameShape(QFrame.WinPanel)
+                self.q1.setStyleSheet("background-color:rgb(91, 213, 89)")
+                self.ui.centralwidget.setStyleSheet(" ")
                 self.next.setText("Далее")
+                self.next.clicked.disconnect()
                 self.next.clicked.connect(lambda: self.answerCheck(key))
             except KeyError:
                 tek = ['*** No more question', '', '', '', '']
                 self.finish()
-            self.q1.setStyleSheet("background-color:rgb(91, 213, 89)")
         else:
             self.finish()
 
@@ -226,6 +219,7 @@ class TestApp(QtWidgets.QMainWindow):
             a.hide()
         for ch in self.ch_dic.values():
             ch.hide()
+        self.next.hide()
         QTimer.singleShot(100, self.testMain)
 
     def finish(self):
@@ -257,9 +251,12 @@ class TestApp(QtWidgets.QMainWindow):
         with open('report.txt', 'a', encoding='utf-8') as f_rep:
             f_rep.write(self.rep)
         self.q1.setText(self.rep)
+        self.next.show()
+        self.print.show()
         self.next.clicked.disconnect()
         self.next.setText("Закончить")
         self.next.clicked.connect(self.close)
+        self.ui.menubar.show()
 
     def openRep(self):
         try:
@@ -268,11 +265,59 @@ class TestApp(QtWidgets.QMainWindow):
             self.q1.show()
             self.q1.setText(str(e))
 
-    def settShow(self):
+    def settFrameShow(self):
+        self.settRead()
+        if self.color == 1:
+            self._set.colBox.isChecked()
+        if self.rand == 1:
+            self._set.ranBox.isChecked()
+        self._set.tryLine.setText(str(self.q_try))
+        self._set.mark5Line.setText(str(self.mark_5))
+        self._set.mark4Line.setText(str(self.mark_4))
+        self._set.mark3Line.setText(str(self.mark_3))
+        self._set.mark2Line.setText(str(self.mark_2))
+        self.settFrame.show()
+        self._set.buttonBox.accepted.connect(self.settWrite)
+        self._set.buttonBox.rejected.connect(self.settFrame.close)
+
+    def settWrite(self):
+        if self._set.colBox.isChecked():
+            self.color = 1
+        else:
+            self.color = 0
+        if self._set.ranBox.isChecked():
+            self.rand = 1
+        else:
+            self.rand = 0
+        self.q_try = self._set.tryLine.text()
+        self.mark_5 = self._set.mark5Line.text()
+        self.mark_4 = self._set.mark4Line.text()
+        self.mark_3 = self._set.mark3Line.text()
+        self.mark_2 = self._set.mark2Line.text()
+        settings = [
+            self.color, self.rand, self.q_try, self.mark_5,
+            self.mark_4, self.mark_3, self.mark_2
+        ]
+        with open("settings.ini", "w", encoding='utf-8')as f:
+            for i in settings:
+                f.write("%s " % i)
+        self.settFrame.close()
+
+    def settRead(self):
+        # Settings read from ini file
         try:
-            subprocess.Popen(['notepad.exe', r'settings.ini'])
-        except Exception:
-            pass
+            with open('settings.ini', 'r', encoding='utf-8')as f:
+                line = f.readline().split()
+                line = [int(l) for l in line]
+        except FileNotFoundError:
+            self.q1.setText("Нет файла настроек программы!!! Зайдите в настройки! ")
+        self.color = line[0]
+        self.rand = line[1]
+        self.q_try = line[2]
+        self.mark_5 = line[3]
+        self.mark_4 = line[4]
+        self.mark_3 = line[5]
+        self.mark_2 = line[6]
 
     def timeSpent(self):
         if self.fin:
@@ -288,15 +333,21 @@ class TestApp(QtWidgets.QMainWindow):
             else:
                 self.spent_time = str(tm) + ":" + str(ts)
             self.bar.showMessage(
-                "Время " + self.spent_time + "      " + "Тест:  " + self.test_name + "          Вопрос № " + str(
-                    self.q_count + 1)
-                + "          Результат: " + str(self.percent) + " %         Студент " + self.student + "         " +
-                " Вопросов " + str(self.q_try) + "             Случайно  " + self.ifrand + "           Контроль  "
-                + self.ifcolor
+                "Время " + self.spent_time + "  Тест: " + self.test_name + "  Вопрос №" + str(self.q_count + 1)
+                + "  Результат: " + str(self.percent) + "%  Студент " + self.student + "  Вопросов " +
+                str(self.q_try) + "  Случайно " + self.ifrand + "  Контроль " + self.ifcolor
             )
             QTimer.singleShot(500, self.timeSpent)
         else:
             self.bar.showMessage(" ")
+
+    def printer(self):
+        with open('temp.txt', 'w', encoding='utf-8')as f:
+            f.write(self.rep)
+        os.startfile("temp.txt", "print")
+        time.sleep(3)
+        os.remove("temp.txt")
+
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
@@ -305,6 +356,15 @@ class TestApp(QtWidgets.QMainWindow):
             except AttributeError:
                 pass
             self.close()
+
+    def aboutMenu(self):
+        self.q1.setFont(self.font1)
+        self.q1.show()
+        self.q1.setText(
+            'Программа для тестирования была написана для проведения проверки знаний у персонала ГП "Кыргызаэронавигация"\n'
+            'Настройка и использование программы не должны вызвать каких-либо затруднений. Для настройки нажмите "Меню"'
+            '-> "Настройки"\nВ случае возникновения вопросов прошу обращаться.\n\nРазработчик: Мамутов А'
+        )
 
 
 if __name__ == '__main__':
