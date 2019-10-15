@@ -121,12 +121,12 @@ class TestApp(QtWidgets.QMainWindow):
     def testInit(self):
         self.settRead()
         # Define variables
-        self.fin = True
+        self.fin = False
         self.q_num_list = []
         self.result = 0
         self.percent = 0
         self.q_count = 0
-        self.start_time = time.time()
+        self.spent_time = False
         self.student = self.lineStud.text().title()
         try:
             # Check if questions in settings not exceed questions in self.test dictionary
@@ -147,11 +147,18 @@ class TestApp(QtWidgets.QMainWindow):
             self.q1.setText("\n\n\n" + self.student + ", желаю удачи в прохождении теста:\n" + self.test_name)
             self.next.setText("Поехали!")
             self.next.clicked.connect(self.testMain)
-        except Exception:
+        except Exception as e:
             pass
 
     def testMain(self):
-        self.timeSpent()
+        if not self.spent_time:
+            self.start_time = time.time()
+            self.timeSpent()
+        for a in self.a_dic.values():
+            a.hide()
+        for ch in self.ch_dic.values():
+            ch.hide()
+            ch.setChecked(False)
         if self.q_try:
             if not self.rand:
                 self.q_num = self.q_count
@@ -180,9 +187,9 @@ class TestApp(QtWidgets.QMainWindow):
                 for i in range(1, frame):
                     a = self.a_dic[i]
                     a.show()
+                    a.setStyleSheet("")
                     ch = self.ch_dic[i]
                     ch.show()
-                self.next.show()
                 self.q1.setFont(self.font2)
                 self.q1.setText(question)
                 self.q1.setFrameShape(QFrame.WinPanel)
@@ -204,28 +211,27 @@ class TestApp(QtWidgets.QMainWindow):
         for k, v in self.ch_dic.items():
             if v.isChecked():
                 answer.append(k)
-                v.setChecked(False)
-        for a in self.a_dic.values():
-            a.clear()
         if key == answer:
             self.result += 1
         else:
-            if self.color == 1:
-                self.q1.setStyleSheet("background-color: rgb(255, 0, 0)")
+            self.q1.setStyleSheet("background-color: rgb(255, 0, 0)")
+        if self.color == 1:
+            for i in key:
+                a= self.a_dic[i]
+                a.setStyleSheet("background-color:rgb(91, 213, 89)")
         if self.q_count == 0:
             p = 0
         else:
             p = self.result * 100 / self.q_count
         self.percent = float("%.1f" % p)
+        QTimer.singleShot(self.color_time*1000, self.testMain)
+
+    def finish(self):
+        self.fin = True
         for a in self.a_dic.values():
             a.hide()
         for ch in self.ch_dic.values():
             ch.hide()
-        self.next.hide()
-        QTimer.singleShot(100, self.testMain)
-
-    def finish(self):
-        self.fin = False
         self.day = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         if self.percent >= self.mark_5:
             self.mark = '5'
@@ -272,6 +278,7 @@ class TestApp(QtWidgets.QMainWindow):
         try:
             if self.color == 1:
                 self._set.colBox.setChecked(True)
+                self._set.colTimeLine.setText(str(self.color_time))
             if self.rand == 1:
                 self._set.ranBox.setChecked(True)
             self._set.tryLine.setText(str(self.q_try))
@@ -288,8 +295,10 @@ class TestApp(QtWidgets.QMainWindow):
     def settWrite(self):
         if self._set.colBox.isChecked():
             self.color = 1
+            self.color_time = self._set.colTimeLine.text()
         else:
             self.color = 0
+            self.color_time = 0
         if self._set.ranBox.isChecked():
             self.rand = 1
         else:
@@ -300,7 +309,7 @@ class TestApp(QtWidgets.QMainWindow):
         self.mark_3 = self._set.mark3Line.text()
         self.mark_2 = self._set.mark2Line.text()
         settings = [
-            self.color, self.rand, self.q_try, self.mark_5,
+            self.color, self.color_time, self.rand, self.q_try, self.mark_5,
             self.mark_4, self.mark_3, self.mark_2
         ]
         with open("settings.ini", "w", encoding='utf-8')as f:
@@ -315,19 +324,20 @@ class TestApp(QtWidgets.QMainWindow):
                 line = f.readline().split()
                 line = [int(l) for l in line]
             self.color = line[0]
-            self.rand = line[1]
-            self.q_try = line[2]
-            self.mark_5 = line[3]
-            self.mark_4 = line[4]
-            self.mark_3 = line[5]
-            self.mark_2 = line[6]
+            self.color_time = line[1]
+            self.rand = line[2]
+            self.q_try = line[3]
+            self.mark_5 = line[4]
+            self.mark_4 = line[5]
+            self.mark_3 = line[6]
+            self.mark_2 = line[7]
         except Exception as e:
             self.settFrame.show()
             self._set.buttonBox.accepted.connect(self.settWrite)
             self._set.buttonBox.rejected.connect(self.settFrame.close)
 
     def timeSpent(self):
-        if self.fin:
+        if not self.fin:
             t = int(time.time()) - int(self.start_time)
             if t >= 60:
                 tm = int(t / 60)
