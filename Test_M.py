@@ -25,6 +25,7 @@ class TestApp(QtWidgets.QMainWindow):
         self.settFrame = QFrame()
         self._set = Settings()
         self._set.setupUi(self.settFrame)
+        self.info = self.ui.infoLine
         self.q1 = self.ui.question
         self.a_dic = {
             1: self.ui.answer1, 2: self.ui.answer2,
@@ -50,6 +51,7 @@ class TestApp(QtWidgets.QMainWindow):
         self.about.triggered.connect(self.aboutMenu)
         self.exit.triggered.connect(sys.exit)
         self.q1.hide()
+        self.info.hide()
         self.print.hide()
         for a in self.a_dic.values():
             a.hide()
@@ -154,6 +156,7 @@ class TestApp(QtWidgets.QMainWindow):
         if not self.spent_time:
             self.start_time = time.time()
             self.timeSpent()
+        self.info.hide()
         for a in self.a_dic.values():
             a.hide()
         for ch in self.ch_dic.values():
@@ -192,6 +195,11 @@ class TestApp(QtWidgets.QMainWindow):
                     ch.show()
                 self.q1.setFont(self.font2)
                 self.q1.setText(question)
+                if len(key) > 1:
+                    self.info.setText('Выберите несколько вариантов ответа')
+                elif len(key) <= 1:
+                    self.info.setText('Выберите один вариант ответа')
+                self.info.show()
                 self.q1.setFrameShape(QFrame.WinPanel)
                 self.q1.setStyleSheet("background-color:rgb(91, 213, 89)")
                 self.ui.centralwidget.setStyleSheet(" ")
